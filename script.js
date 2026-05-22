@@ -8,7 +8,7 @@ const products = [
     { id: 5, name: 'Thai Tea', price: 22000, img: 'https://images.unsplash.com/photo-1557006021-b85faa2bc5e2?w=200&h=200&fit=crop', category: 'manis' },
     // Tambahan Makanan Ringan
     { id: 6, name: 'Kentang Goreng', price: 15000, img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?w=200&h=200&fit=crop', category: 'ringan' },
-    { id: 7, name: 'Roti Bakar Coklat', price: 18000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&h=200&fit=crop', category: 'ringan' },
+    { id: 7, name: 'Roti Bakar', price: 18000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&h=200&fit=crop', category: 'ringan' },
     // Tambahan Makanan Berat
     { id: 8, name: 'Nasi Goreng', price: 30000, img: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop', category: 'berat' },
     { id: 9, name: 'Mie Tek-Tek', price: 25000, img: 'https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/Screen_Shot_2022-06-30_at_18_25_01.png', category: 'berat' }
