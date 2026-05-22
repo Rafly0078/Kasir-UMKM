@@ -1012,3 +1012,223 @@ body {
 .input-meja::placeholder {
     color: var(--text-muted);
 }
+
+/* ============================================================
+   KASIR UMKM v2.0 — Tambahan Komponen
+   ============================================================ */
+
+/* ── SEARCH BAR ─────────────────────────────── */
+.search-bar-wrapper {
+    position: relative;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.search-bar {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 11px 40px 11px 38px;
+    border-radius: var(--radius-md);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    transition: var(--transition);
+}
+
+.search-bar:focus {
+    border-color: var(--accent);
+    outline: none;
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 0 3px rgba(232, 160, 69, 0.1);
+}
+
+.search-bar::placeholder { color: var(--text-muted); }
+
+.search-clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.search-clear-btn:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+.search-clear-btn.hidden { display: none; }
+
+/* ── SEARCH EMPTY STATE ─────────────────────── */
+.search-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-muted);
+}
+
+.search-empty-icon {
+    font-size: 2.8rem;
+    opacity: 0.25;
+    margin-bottom: 12px;
+}
+
+.search-empty p { font-size: 0.88rem; line-height: 1.6; }
+.search-empty strong { color: var(--accent-text); }
+
+/* ── PRODUCT CARD — IN-CART STATE ───────────── */
+.product-card.in-cart {
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 1px rgba(232, 160, 69, 0.15);
+}
+
+/* Badge jumlah di pojok kartu produk */
+.product-card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--accent);
+    color: var(--bg-base);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+    animation: badgePop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgePop {
+    from { transform: scale(0.6); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ── CART HEADER RIGHT ──────────────────────── */
+.cart-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── CLEAR CART BUTTON ──────────────────────── */
+.btn-clear-cart {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 3px 9px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-clear-cart:hover {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.35);
+    background: rgba(255, 107, 107, 0.08);
+}
+
+.btn-clear-cart.hidden { display: none; }
+
+/* ── CART ITEM — UPDATED LAYOUT ─────────────── */
+/* Tambahkan subtotal di kanan, unit price di bawah nama */
+.cart-item {
+    align-items: flex-start; /* override dari center */
+}
+
+.cart-item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.item-subtotal {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-text);
+    white-space: nowrap;
+}
+
+.item-unit-price {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ── ITEM COUNT ROW (cart footer) ───────────── */
+.item-count-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item-count-label {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+/* ── BTN-SELESAI (fix: was missing display on index) ── */
+/* The btn-selesai was styled but index.html uses class 'btn btn-selesai' */
+.btn.btn-selesai {
+    width: 100%;
+    padding: 14px;
+    background: var(--success);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(76,175,125,0.3);
+}
+
+.btn.btn-selesai:hover {
+    background: #3d9e6a;
+    box-shadow: 0 6px 24px rgba(76,175,125,0.45);
+    transform: translateY(-1px);
+}
+
+/* ── RESPONSIVE ADDITIONS ───────────────────── */
+@media (max-width: 680px) {
+    .search-bar-wrapper { margin-bottom: 12px; }
+    .search-bar { font-size: 0.84rem; }
+    .btn-clear-cart { font-size: 0.68rem; padding: 3px 7px; }
+    .item-unit-price { font-size: 0.7rem; }
+    .item-subtotal { font-size: 0.8rem; }
+}
