@@ -1,5 +1,4 @@
 // --- DUMMY DATA PRODUK ---
-// Menambahkan properti "category" pada masing-masing produk
 const products = [
     { id: 1, name: 'Cappuccino', price: 25000, img: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=200&h=200&fit=crop', category: 'coffee' },
     { id: 2, name: 'Americano', price: 20000, img: 'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=200&h=200&fit=crop', category: 'coffee' },
@@ -15,7 +14,7 @@ const products = [
 
 // --- STATE ---
 let cart = [];
-let currentCategory = 'all'; // State untuk melacak kategori aktif
+let currentCategory = 'all';
 
 // --- UTILITY: Format Rupiah ---
 const formatRupiah = (number) => {
@@ -42,15 +41,10 @@ updateClock();
 const productGrid = document.getElementById('product-grid');
 const tabBtns = document.querySelectorAll('.tab-btn');
 
-// Event listener untuk tombol kategori
 tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-        // Hapus class 'active' dari semua tombol
         tabBtns.forEach(b => b.classList.remove('active'));
-        // Tambahkan class 'active' ke tombol yang diklik
         btn.classList.add('active');
-        
-        // Update kategori saat ini dan render ulang produk
         currentCategory = btn.dataset.category;
         renderProducts();
     });
@@ -59,12 +53,10 @@ tabBtns.forEach(btn => {
 function renderProducts() {
     productGrid.innerHTML = '';
     
-    // Filter produk berdasarkan kategori aktif
     const filteredProducts = currentCategory === 'all' 
         ? products 
         : products.filter(p => p.category === currentCategory);
 
-    // Tampilkan produk yang sudah difilter
     filteredProducts.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
@@ -105,8 +97,7 @@ function updateQty(productId, delta) {
     updateCartUI();
 }
 
-// Render cart items HTML string
-function buildCartItemsHTML(idSuffix) {
+function buildCartItemsHTML() {
     if (cart.length === 0) {
         return `
             <div class="cart-empty">
@@ -142,7 +133,6 @@ function updateCartUI() {
     const isEmpty = cart.length === 0;
     const cartHTML = buildCartItemsHTML();
 
-    // --- Desktop ---
     const cartItems = document.getElementById('cart-items');
     const totalPriceEl = document.getElementById('total-price');
     const cartCountEl = document.getElementById('cart-count');
@@ -158,7 +148,6 @@ function updateCartUI() {
         btnQris.dataset.total = total;
     }
 
-    // --- Mobile panel ---
     const cartItemsMobile = document.getElementById('cart-items-mobile');
     const totalPriceMobile = document.getElementById('total-price-mobile');
     const cartCountMobile = document.getElementById('cart-count-mobile');
@@ -174,7 +163,6 @@ function updateCartUI() {
         btnQrisMobile.dataset.total = total;
     }
 
-    // --- Mobile bottom bar ---
     const mobileOrderBtn = document.getElementById('mobile-order-btn');
     const mobileTotalPrice = document.getElementById('mobile-total-price');
     const mobileCartCount = document.getElementById('mobile-cart-count');
@@ -202,14 +190,9 @@ function closeCartPanel() {
     document.body.style.overflow = '';
 }
 
-if (mobileOrderBtn) {
-    mobileOrderBtn.addEventListener('click', openCartPanel);
-}
-if (cartOverlayBackdrop) {
-    cartOverlayBackdrop.addEventListener('click', closeCartPanel);
-}
+if (mobileOrderBtn) mobileOrderBtn.addEventListener('click', openCartPanel);
+if (cartOverlayBackdrop) cartOverlayBackdrop.addEventListener('click', closeCartPanel);
 
-// Mobile QRIS button
 const btnQrisMobile = document.getElementById('btn-qris-mobile');
 if (btnQrisMobile) {
     btnQrisMobile.addEventListener('click', () => {
@@ -222,7 +205,6 @@ if (btnQrisMobile) {
 const modal = document.getElementById('qris-modal');
 const btnQris = document.getElementById('btn-qris');
 const closeModal = document.getElementById('close-modal');
-const btnSelesai = document.getElementById('btn-selesai');
 
 function openQrisModal(totalTrx) {
     document.getElementById('modal-total-price').innerText = formatRupiah(totalTrx);
@@ -243,64 +225,98 @@ if (closeModal) {
     });
 }
 
-document.querySelector('.modal-backdrop').addEventListener('click', () => {
-    modal.classList.add('hidden');
-});
+const modalBackdropElement = document.querySelector('.modal-backdrop');
+if (modalBackdropElement) {
+    modalBackdropElement.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+}
+
+// --- LOGIKA MODAL NOTIFIKASI ---
+const notifModal = document.getElementById('notif-modal');
+const btnTutupNotif = document.getElementById('btn-tutup-notif');
+const notifBackdrop = document.getElementById('notif-backdrop');
+
+function closeNotifModal() {
+    if(notifModal) notifModal.classList.add('hidden');
+}
+
+if(btnTutupNotif) btnTutupNotif.addEventListener('click', closeNotifModal);
+if(notifBackdrop) notifBackdrop.addEventListener('click', closeNotifModal);
 
 // --- PROSES PESANAN & KIRIM KE ADMIN ---
 function prosesPesanan(metodePembayaran) {
-    // Ambil nomor meja (cek dari desktop atau mobile)
     const inputDesktop = document.getElementById('input-meja-desktop');
     const inputMobile = document.getElementById('input-meja-mobile');
     
     let noMeja = '';
     if (inputDesktop && inputDesktop.value) noMeja = inputDesktop.value;
     else if (inputMobile && inputMobile.value) noMeja = inputMobile.value;
-    else noMeja = 'Takeaway'; // Default jika kosong
+    else noMeja = 'Takeaway';
 
-    // Buat objek data pesanan
+    let statusPesanan = metodePembayaran === 'QRIS' ? 'pending' : 'menunggu_pembayaran';
+
     const orderData = {
-        id: 'ORD-' + Math.floor(Math.random() * 10000), // ID Unik
+        id: 'ORD-' + Math.floor(Math.random() * 10000),
         waktu: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         meja: noMeja,
         items: [...cart],
         total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
         metode: metodePembayaran,
-        status: 'pending' // pending = belum diantar
+        status: statusPesanan 
     };
 
-    // Ambil data lama di database browser, lalu tambahkan pesanan baru
-    let orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
-    orders.push(orderData);
-    localStorage.setItem('umkm_orders', JSON.stringify(orders));
+    // Amankan penyimpanan memori
+    try {
+        let orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
+        orders.push(orderData);
+        localStorage.setItem('umkm_orders', JSON.stringify(orders));
+    } catch (e) {
+        console.error("Gagal simpan pesanan: ", e);
+    }
 
-    // Reset Kasir
-    alert(`Pesanan Meja ${noMeja} Berhasil Dibuat!`);
+    const iconEl = document.getElementById('notif-icon');
+    const titleEl = document.getElementById('notif-title');
+    const descEl = document.getElementById('notif-desc');
+
+    if (notifModal && titleEl) {
+        if (metodePembayaran === 'QRIS') {
+            iconEl.innerText = '✅';
+            titleEl.innerText = 'Pembayaran Berhasil!';
+            descEl.innerText = `Pesanan untuk Meja ${noMeja} sedang diproses. Pesanan akan segera diantarkan!`;
+        } else {
+            iconEl.innerText = '💵';
+            titleEl.innerText = 'Pesanan Disimpan';
+            descEl.innerText = `Silakan menuju kasir untuk melakukan pembayaran dan mengonfirmasi pesanan Meja ${noMeja}.`;
+        }
+        notifModal.classList.remove('hidden');
+    } else {
+        alert(`SUKSES! Pesanan Meja ${noMeja} tersimpan. Metode: ${metodePembayaran}`);
+    }
+
+    const qrisModal = document.getElementById('qris-modal');
+    if (qrisModal) qrisModal.classList.add('hidden');
+
     cart = [];
     if (inputDesktop) inputDesktop.value = '';
     if (inputMobile) inputMobile.value = '';
-    
     updateCartUI();
-    modal.classList.add('hidden');
     closeCartPanel();
 }
 
-// Event Listener Pembayaran Selesai (QRIS)
-if (btnSelesai) {
-    btnSelesai.addEventListener('click', () => {
-        prosesPesanan('QRIS');
-    });
+// Event Listener Pembayaran
+const btnSelesaiBtn = document.getElementById('btn-selesai');
+const btnCashDesktopBtn = document.getElementById('btn-cash');
+const btnCashMobileBtn = document.getElementById('btn-cash-mobile');
+
+if (btnSelesaiBtn) {
+    btnSelesaiBtn.onclick = () => prosesPesanan('QRIS');
 }
-
-// Event Listener Pembayaran CASH
-const btnCashDesktop = document.getElementById('btn-cash');
-const btnCashMobileBtn = document.getElementById('btn-cash-mobile'); // <- Ini yang sebelumnya terlewat
-
-if (btnCashDesktop) {
-    btnCashDesktop.addEventListener('click', () => prosesPesanan('CASH'));
+if (btnCashDesktopBtn) {
+    btnCashDesktopBtn.onclick = () => prosesPesanan('CASH');
 }
 if (btnCashMobileBtn) {
-    btnCashMobileBtn.addEventListener('click', () => prosesPesanan('CASH'));
+    btnCashMobileBtn.onclick = () => prosesPesanan('CASH');
 }
 
 // --- INIT ---
