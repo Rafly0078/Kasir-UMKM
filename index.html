@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir UMKM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="pos-container">
+
+        <!-- KIRI: Produk -->
+        <main class="products-section">
+            <header class="top-bar">
+                <div class="brand">
+                    <div class="brand-icon">☕</div>
+                    <div>
+                        <h1 class="brand-name">Kasir UMKM</h1>
+                        <span class="brand-sub">Point of Sale</span>
+                    </div>
+                </div>
+                <div class="date-time" id="datetime"></div>
+            </header>
+
+            <div class="section-label">Menu</div>
+
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="all">Semua</button>
+                <button class="tab-btn" data-category="coffee">Coffee</button>
+                <button class="tab-btn" data-category="manis">Manis Manis</button>
+                <button class="tab-btn" data-category="ringan">Makanan Ringan</button>
+                <button class="tab-btn" data-category="berat">Makanan Berat</button>
+            </div>
+
+            <div id="product-grid" class="product-grid"></div>
+        </main>
+
+        <!-- KANAN: Keranjang (desktop sidebar) -->
+        <aside class="cart-section">
+            <div class="cart-header">
+                <h2 class="cart-title">Order</h2>
+                <span class="cart-badge" id="cart-count">0</span>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="divider"></div>
+                <div class="total-row">
+                    <span class="total-label">Total</span>
+                    <span id="total-price" class="total-price">Rp 0</span>
+                </div>
+                <div class="payment-buttons">
+                    <button id="btn-cash" class="btn btn-cash" disabled>
+                        <span>Cash</span>
+                    </button>
+                    <button id="btn-qris" class="btn btn-qris" disabled>
+                        <span>QRIS</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MOBILE: Bottom Order Button -->
+    <button class="mobile-order-btn" id="mobile-order-btn">
+        <div class="mobile-order-left">
+            <span class="mobile-order-badge" id="mobile-cart-count">0</span>
+            <span class="mobile-order-label">Lihat Order</span>
+        </div>
+        <span class="mobile-order-total" id="mobile-total-price">Rp 0</span>
+    </button>
+
+    <!-- MOBILE: Cart Slide-up Panel -->
+    <div class="cart-overlay" id="cart-overlay">
+        <div class="cart-overlay-backdrop" id="cart-overlay-backdrop"></div>
+        <div class="cart-panel">
+            <div class="cart-panel-handle"></div>
+            <div class="cart-header">
+                <h2 class="cart-title">Order</h2>
+                <span class="cart-badge" id="cart-count-mobile">0</span>
+            </div>
+            <div id="cart-items-mobile" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="divider"></div>
+                <div class="total-row">
+                    <span class="total-label">Total</span>
+                    <span id="total-price-mobile" class="total-price">Rp 0</span>
+                </div>
+                <div class="payment-buttons">
+                    <button id="btn-cash-mobile" class="btn btn-cash" disabled>
+                        <span>Cash</span>
+                    </button>
+                    <button id="btn-qris-mobile" class="btn btn-qris" disabled>
+                        <span>QRIS</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL QRIS -->
+    <div id="qris-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="close-btn" id="close-modal">✕</button>
+            <div class="modal-header">
+                <div class="modal-icon">⚡</div>
+                <h3>Scan & Bayar</h3>
+                <p class="modal-subtitle">Arahkan kamera ke QR Code</p>
+            </div>
+            <div class="qr-wrapper">
+                <img id="qris-image" src="" alt="QRIS Code">
+                <div class="qr-corner tl"></div>
+                <div class="qr-corner tr"></div>
+                <div class="qr-corner bl"></div>
+                <div class="qr-corner br"></div>
+            </div>
+            <div class="modal-amount">
+                <span class="modal-amount-label">Total Pembayaran</span>
+                <span id="modal-total-price" class="modal-amount-value">Rp 0</span>
+            </div>
+            <div class="waiting-indicator">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="waiting-text">Menunggu pembayaran</span>
+            </div>
+            <button id="btn-selesai" class="btn btn-selesai">✓ Konfirmasi Pembayaran</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
