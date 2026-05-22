@@ -1,6 +1,69 @@
+// --- ELEMEN DOM ---
+const loginSection = document.getElementById('login-section');
+const adminDashboard = document.getElementById('admin-dashboard');
+const btnLogin = document.getElementById('btn-login');
+const btnLogout = document.getElementById('btn-logout');
+const errorText = document.getElementById('login-error');
 const ordersContainer = document.getElementById('admin-orders');
 
-// Fungsi untuk membaca dan merender pesanan
+// --- PENGATURAN KREDENSIAL DUMMY ---
+// Anda bisa mengubah username dan password ini sesuai keinginan
+const ADMIN_USER = 'rafly007';
+const ADMIN_PASS = 'Giovanni8';
+
+// --- LOGIKA LOGIN & SESI ---
+// Cek apakah admin sudah login sebelumnya di tab ini
+if (sessionStorage.getItem('is_admin_logged_in') === 'true') {
+    bukaDashboard();
+}
+
+// Event klik tombol Login
+btnLogin.addEventListener('click', prosesLogin);
+
+// Bisa login pakai tombol Enter di keyboard
+document.getElementById('password').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') prosesLogin();
+});
+
+function prosesLogin() {
+    const userVal = document.getElementById('username').value;
+    const passVal = document.getElementById('password').value;
+
+    if (userVal === ADMIN_USER && passVal === ADMIN_PASS) {
+        // Jika Benar
+        sessionStorage.setItem('is_admin_logged_in', 'true');
+        bukaDashboard();
+    } else {
+        // Jika Salah
+        errorText.style.display = 'block';
+    }
+}
+
+// Event klik tombol Logout
+btnLogout.addEventListener('click', () => {
+    sessionStorage.removeItem('is_admin_logged_in');
+    
+    // Sembunyikan dashboard, kembalikan ke layar login
+    adminDashboard.classList.add('hidden');
+    loginSection.classList.remove('hidden');
+    
+    // Reset input form
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    errorText.style.display = 'none';
+});
+
+function bukaDashboard() {
+    // Sembunyikan form login, tampilkan dashboard
+    loginSection.classList.add('hidden');
+    adminDashboard.classList.remove('hidden');
+    
+    // Mulai render pesanan karena sudah terautentikasi
+    renderOrders();
+}
+
+
+// --- LOGIKA RENDER PESANAN (Hanya jalan jika sudah login) ---
 function renderOrders() {
     // Ambil data dari LocalStorage
     const orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
@@ -57,10 +120,8 @@ function selesaikanPesanan(orderId) {
 
 // Otomatis render ulang jika ada pesanan baru dari tab Kasir!
 window.addEventListener('storage', (e) => {
-    if (e.key === 'umkm_orders') {
+    // Hanya render otomatis jika yang terbuka saat ini adalah dashboard
+    if (e.key === 'umkm_orders' && sessionStorage.getItem('is_admin_logged_in') === 'true') {
         renderOrders();
     }
 });
-
-// Inisialisasi awal
-renderOrders();
