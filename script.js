@@ -11,7 +11,8 @@ const products = [
     { id: 7, name: 'Roti Bakar', price: 18000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&h=200&fit=crop', category: 'ringan' },
     // Tambahan Makanan Berat
     { id: 8, name: 'Nasi Goreng', price: 30000, img: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop', category: 'berat' },
-    { id: 9, name: 'Mie Tek-Tek', price: 25000, img: 'https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/Screen_Shot_2022-06-30_at_18_25_01.png', category: 'berat' }
+    { id: 9, name: 'Mie Tek-Tek', price: 25000, img: 'https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/Screen_Shot_2022-06-30_at_18_25_01.png', category: 'berat' },
+    { id: 10, name: 'Strawberry Smoothie', price: 20000, img: 'https://www.google.com/imgres?q=strawberry%20smoothies&imgurl=https%3A%2F%2Fassets-cloudflare.segari-ops.id%2Frecipes%2Fsmoothies-strawberry-lsbc8eveOgbTK.jpg&imgrefurl=https%3A%2F%2Fsegari.id%2Frecipes%2Fsmoothies-strawberry%3Fsrsltid%3DAfmBOoo1nzA90HIGVY81CV_hyQ-P3G28bPldN6-4tfSeIMUyAWPt0awn&docid=JLzNizghB5jXjM&tbnid=958y1KNzaKoPkM&vet=12ahUKEwiS9-WXhMyUAxVBzjgGHTWLBjsQnPAOegQIGBAB..i&w=600&h=600&hcb=2&ved=2ahUKEwiS9-WXhMyUAxVBzjgGHTWLBjsQnPAOegQIGBAB', category: 'manis' }
 ];
 
 // --- STATE ---
