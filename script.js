@@ -6,12 +6,11 @@ const products = [
     { id: 3, name: 'Latte', price: 25000, img: 'https://images.unsplash.com/photo-1561882468-9110e03e0f78?w=200&h=200&fit=crop', category: 'coffee' },
     { id: 4, name: 'Matcha Latte', price: 28000, img: 'https://images.unsplash.com/photo-1536514072410-5019a3c69182?w=200&h=200&fit=crop', category: 'manis' },
     { id: 5, name: 'Thai Tea', price: 22000, img: 'https://images.unsplash.com/photo-1557006021-b85faa2bc5e2?w=200&h=200&fit=crop', category: 'manis' },
-    // Tambahan Makanan Ringan
     { id: 6, name: 'Kentang Goreng', price: 15000, img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?w=200&h=200&fit=crop', category: 'ringan' },
     { id: 7, name: 'Roti Bakar', price: 18000, img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&h=200&fit=crop', category: 'ringan' },
-    // Tambahan Makanan Berat
     { id: 8, name: 'Nasi Goreng', price: 30000, img: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop', category: 'berat' },
-    { id: 9, name: 'Mie Tek-Tek', price: 25000, img: 'https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/Screen_Shot_2022-06-30_at_18_25_01.png', category: 'berat' }
+    { id: 9, name: 'Mie Tek-Tek', price: 25000, img: 'https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/Screen_Shot_2022-06-30_at_18_25_01.png', category: 'berat' },
+    { id: 10, name: 'Strawberry Milkshake', price: 25000, img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqRGbaU3AfoUNn-eh-RlIzKLzJ_B37wUVw2w&s', category: 'manis' }
 ];
 
 // --- STATE ---
@@ -248,14 +247,59 @@ document.querySelector('.modal-backdrop').addEventListener('click', () => {
     modal.classList.add('hidden');
 });
 
+// --- PROSES PESANAN & KIRIM KE ADMIN ---
+function prosesPesanan(metodePembayaran) {
+    // Ambil nomor meja (cek dari desktop atau mobile)
+    const inputDesktop = document.getElementById('input-meja-desktop');
+    const inputMobile = document.getElementById('input-meja-mobile');
+    
+    let noMeja = '';
+    if (inputDesktop && inputDesktop.value) noMeja = inputDesktop.value;
+    else if (inputMobile && inputMobile.value) noMeja = inputMobile.value;
+    else noMeja = 'Takeaway'; // Default jika kosong
+
+    // Buat objek data pesanan
+    const orderData = {
+        id: 'ORD-' + Math.floor(Math.random() * 10000), // ID Unik
+        waktu: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        meja: noMeja,
+        items: [...cart],
+        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+        metode: metodePembayaran,
+        status: 'pending' // pending = belum diantar
+    };
+
+    // Ambil data lama di database browser, lalu tambahkan pesanan baru
+    let orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
+    orders.push(orderData);
+    localStorage.setItem('umkm_orders', JSON.stringify(orders));
+
+    // Reset Kasir
+    alert(`Pesanan Meja ${noMeja} Berhasil Dibuat!`);
+    cart = [];
+    if (inputDesktop) inputDesktop.value = '';
+    if (inputMobile) inputMobile.value = '';
+    
+    updateCartUI();
+    modal.classList.add('hidden');
+    closeCartPanel();
+}
+
+// Event Listener Pembayaran Selesai (QRIS)
 if (btnSelesai) {
     btnSelesai.addEventListener('click', () => {
-        alert('Pembayaran QRIS Berhasil! (Nanti bagian ini yang menembak API ke Google Sheets)');
-        cart = [];
-        updateCartUI();
-        modal.classList.add('hidden');
-        closeCartPanel();
+        prosesPesanan('QRIS');
     });
+}
+
+// Event Listener Pembayaran CASH
+const btnCashDesktop = document.getElementById('btn-cash');
+
+if (btnCashDesktop) {
+    btnCashDesktop.addEventListener('click', () => prosesPesanan('CASH'));
+}
+if (btnCashMobile) {
+    btnCashMobile.addEventListener('click', () => prosesPesanan('CASH'));
 }
 
 // --- INIT ---
