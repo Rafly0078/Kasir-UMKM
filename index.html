@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=1.3">
 </head>
 <body>
 
@@ -138,6 +138,20 @@
         </div>
     </div>
 
-    <script src="script.js?v=1.1"></script>
+    <div id="notif-modal" class="modal hidden">
+        <div class="modal-backdrop" id="notif-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header" style="margin-bottom: 10px;">
+                <div class="modal-icon" id="notif-icon">✅</div>
+                <h3 id="notif-title">Sukses</h3>
+                <p class="modal-subtitle" id="notif-desc" style="font-size: 0.95rem; line-height: 1.5; margin-top: 12px; color: var(--text-primary);">
+                    Pesan notifikasi
+                </p>
+            </div>
+            <button id="btn-tutup-notif" class="btn-selesai" style="margin-top: 20px;">Tutup</button>
+        </div>
+    </div>
+
+    <script src="script.js?v=1.3"></script>
 </body>
 </html>

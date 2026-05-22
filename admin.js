@@ -6,12 +6,10 @@ const btnLogout = document.getElementById('btn-logout');
 const errorText = document.getElementById('login-error');
 const ordersContainer = document.getElementById('admin-orders');
 
-// --- PENGATURAN KREDENSIAL DUMMY ---
-// Anda bisa mengubah username dan password ini sesuai keinginan
+// --- PENGATURAN KREDENSIAL ---
 const ADMIN_USER = 'rafly007';
 const ADMIN_PASS = 'Giovanni8';
 
-// --- LOGIKA LOGIN & SESI ---
 // Cek apakah admin sudah login sebelumnya di tab ini
 if (sessionStorage.getItem('is_admin_logged_in') === 'true') {
     bukaDashboard();
@@ -19,8 +17,6 @@ if (sessionStorage.getItem('is_admin_logged_in') === 'true') {
 
 // Event klik tombol Login
 btnLogin.addEventListener('click', prosesLogin);
-
-// Bisa login pakai tombol Enter di keyboard
 document.getElementById('password').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') prosesLogin();
 });
@@ -30,11 +26,9 @@ function prosesLogin() {
     const passVal = document.getElementById('password').value;
 
     if (userVal === ADMIN_USER && passVal === ADMIN_PASS) {
-        // Jika Benar
         sessionStorage.setItem('is_admin_logged_in', 'true');
         bukaDashboard();
     } else {
-        // Jika Salah
         errorText.style.display = 'block';
     }
 }
@@ -43,47 +37,61 @@ function prosesLogin() {
 btnLogout.addEventListener('click', () => {
     sessionStorage.removeItem('is_admin_logged_in');
     
-    // Sembunyikan dashboard, kembalikan ke layar login
     adminDashboard.classList.add('hidden');
     loginSection.classList.remove('hidden');
     
-    // Reset input form
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
     errorText.style.display = 'none';
 });
 
 function bukaDashboard() {
-    // Sembunyikan form login, tampilkan dashboard
     loginSection.classList.add('hidden');
     adminDashboard.classList.remove('hidden');
-    
-    // Mulai render pesanan karena sudah terautentikasi
     renderOrders();
 }
 
-
-// --- LOGIKA RENDER PESANAN (Hanya jalan jika sudah login) ---
+// --- LOGIKA RENDER PESANAN ---
 function renderOrders() {
-    // Ambil data dari LocalStorage
     const orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
     
-    // Filter hanya pesanan yang statusnya 'pending'
-    const pendingOrders = orders.filter(order => order.status === 'pending');
+    // Ambil pesanan yang berstatus pending (dapur) ATAU menunggu_pembayaran (kasir)
+    const activeOrders = orders.filter(order => order.status === 'pending' || order.status === 'menunggu_pembayaran');
 
-    if (pendingOrders.length === 0) {
+    if (activeOrders.length === 0) {
         ordersContainer.innerHTML = `<div class="empty-state">Belum ada pesanan masuk. Menunggu pelanggan... ☕</div>`;
         return;
     }
 
-    // Buat elemen HTML untuk setiap pesanan
-    const ordersHTML = pendingOrders.map(order => {
+    const ordersHTML = activeOrders.map(order => {
         const itemsList = order.items.map(item => `
             <li class="order-item">
                 <span><span class="item-qty">${item.qty}x</span> ${item.name}</span>
             </li>
         `).join('');
 
+        // Jika Pelanggan pilih CASH (Belum Bayar / Perlu Konfirmasi Kasir)
+        if (order.status === 'menunggu_pembayaran') {
+            return `
+                <div class="order-card" style="border-color: var(--accent);">
+                    <div class="order-header">
+                        <span class="meja-badge" style="background: var(--bg-input); color: var(--accent);">Meja ${order.meja} (CASH)</span>
+                        <span class="order-time">${order.waktu}</span>
+                    </div>
+                    <ul class="order-items" style="opacity: 0.6;">
+                        ${itemsList}
+                    </ul>
+                    <div style="background: rgba(232, 160, 69, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; color: var(--accent); text-align: center; font-weight: 600;">
+                        Menunggu pelanggan bayar di kasir
+                    </div>
+                    <button class="btn-antar" style="background: var(--accent); color: var(--bg-base);" onclick="konfirmasiPembayaran('${order.id}')">
+                        💰 Terima Uang & Konfirmasi
+                    </button>
+                </div>
+            `;
+        }
+
+        // Jika Pelanggan pilih QRIS atau CASH sudah dikonfirmasi (Masuk antrean Dapur)
         return `
             <div class="order-card">
                 <div class="order-header">
@@ -103,24 +111,30 @@ function renderOrders() {
     ordersContainer.innerHTML = ordersHTML;
 }
 
-// Fungsi jika tombol "Selesai & Antar" ditekan
+// Fungsi khusus Kasir untuk memproses pembayaran Cash
+function konfirmasiPembayaran(orderId) {
+    let orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
+    orders = orders.map(order => {
+        if (order.id === orderId) order.status = 'pending'; 
+        return order;
+    });
+    localStorage.setItem('umkm_orders', JSON.stringify(orders));
+    renderOrders();
+}
+
+// Fungsi khusus Dapur jika makanan siap diantar
 function selesaikanPesanan(orderId) {
     let orders = JSON.parse(localStorage.getItem('umkm_orders')) || [];
-    
-    // Ubah status pesanan menjadi 'completed'
     orders = orders.map(order => {
         if (order.id === orderId) order.status = 'completed';
         return order;
     });
-
-    // Simpan kembali ke localStorage dan render ulang
     localStorage.setItem('umkm_orders', JSON.stringify(orders));
     renderOrders();
 }
 
 // Otomatis render ulang jika ada pesanan baru dari tab Kasir!
 window.addEventListener('storage', (e) => {
-    // Hanya render otomatis jika yang terbuka saat ini adalah dashboard
     if (e.key === 'umkm_orders' && sessionStorage.getItem('is_admin_logged_in') === 'true') {
         renderOrders();
     }
