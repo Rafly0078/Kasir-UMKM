@@ -294,12 +294,13 @@ if (btnSelesai) {
 
 // Event Listener Pembayaran CASH
 const btnCashDesktop = document.getElementById('btn-cash');
+const btnCashMobileBtn = document.getElementById('btn-cash-mobile'); // <- Ini yang sebelumnya terlewat
 
 if (btnCashDesktop) {
     btnCashDesktop.addEventListener('click', () => prosesPesanan('CASH'));
 }
-if (btnCashMobile) {
-    btnCashMobile.addEventListener('click', () => prosesPesanan('CASH'));
+if (btnCashMobileBtn) {
+    btnCashMobileBtn.addEventListener('click', () => prosesPesanan('CASH'));
 }
 
 // --- INIT ---
