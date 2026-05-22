@@ -211,7 +211,7 @@ body {
 
 .product-info {
     padding: 14px;
-    flex: 1;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -235,6 +235,7 @@ body {
 .product-card .btn-add {
     width: 100%;
     padding: 9px;
+    margin-top: auto;
     background: var(--accent-glow);
     border: 1px solid var(--border-accent);
     border-radius: var(--radius-sm);
